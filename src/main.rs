@@ -7,8 +7,7 @@
  use std::io::Write;
  use std::io::prelude::*;
  use std::path::Path;
- use std::fmt::format;
-use std::fs::read_to_string;
+
 struct Task {
     name: String,
     is_complete: bool,
@@ -50,7 +49,7 @@ where P: AsRef<Path>, {
 }
 fn main() {
     if Path::new("./.tasks").exists() {
-        let mut printStr: String = String::new();
+        let mut print_str: String = String::new();
         if let Ok(lines) = read_lines(".tasks") {
             // Iterates over lines in the file
             for line in lines.flatten() {
@@ -58,29 +57,29 @@ fn main() {
     
                 let endval1: Vec<&str> = cleaned_line.split(":").map(|s| s.trim()).collect();
                 let endval2 = endval1.get(1).unwrap_or(&"");
-                let endval3: u32 = endval2.parse().unwrap_or(8312);
-            
-                if endval3 == 8312{
-                    // ignore the line.
-                    println!("empty line")
+                if cleaned_line == "" {
+                    // empty line
                 }else{
+
                     let endval: bool = endval2.parse().unwrap();
                     let endt = endval1.get(0).unwrap_or(&"");
-  
+                   
                 for text in endt.split("[%20]") {
                     let trimmed_text = text.trim();
                     if trimmed_text.contains("[%21]") {
                         if endval == true{
-                            printStr.push_str(String::as_str(&format!("{} ✔",trimmed_text.replace("[%21]",""))));
+                            print_str.push_str(String::as_str(&format!("{} ✔",trimmed_text.replace("[%21]",""))));
                         }else{
-                            printStr.push_str(String::as_str(&format!("{} ❌",trimmed_text.replace("[%21]",""))));
+                            print_str.push_str(String::as_str(&format!("{} ❌",trimmed_text.replace("[%21]",""))));
                         }
                     }else{
                         
-                        printStr.push_str(String::as_str(&format!("{} ",trimmed_text)));
+                        print_str.push_str(String::as_str(&format!("{} ",trimmed_text)));
                     } 
-                }
-                } // Use unwrap_or to handle parse errors
+                
+        
+                }                                   
+            } // Use unwrap_or to handle parse errors
                 
             }
         
@@ -88,7 +87,7 @@ fn main() {
             println!("Error reading the file.");
         }
         
-        println!("{}", printStr); // Print the accumulated string
+        println!("{}", print_str); // Print the accumulated string
     }else{
         println!("Welcome to the todo list! Lets begin with some task you want to complete.");
         
@@ -104,15 +103,20 @@ fn main() {
             let mut taskvector = TaskVector::new();
             for _i in 0..taskcount{
                 let vname = rprompt::prompt_reply("name> ").unwrap();
-                let value: bool = rprompt::prompt_reply("isComplete(1 for true 2 for false)> ").unwrap().parse().expect("Didn't get 1 or 2.");
+                let value: bool = rprompt::prompt_reply("isComplete(true or false)> ").unwrap().parse().expect("Didn't get true or false.");
                 taskvector.append(vname, value);
             }
-            let mut taskString = String::new();
+            let mut task_string = String::new();
+          
             for i in 0..taskvector.len(){
                 let task: &Task = taskvector.get(i).unwrap();
                 println!("Task{}: Name: {}, isComplete: {}",i,task.name,task.is_complete);
-                taskString = format!("\n{}:{}",task.name.replace(" ","[%20]"),task.is_complete);
+            
                 
+              
+                
+                task_string = format!("\n{}",task.name.replace(" ","[%20]"));
+                task_string = format!("{}[%21]:{}",task_string,task.is_complete);
                 
             }
             println!("Saving file.");
@@ -126,7 +130,7 @@ fn main() {
             };
         
             // Write the `LOREM_IPSUM` string to `file`, returns `io::Result<()>`
-            match file.write_all(taskString.as_bytes()) {
+            match file.write_all(task_string.as_bytes()) {
                 Err(why) => panic!("couldn't write to {}: {}", display, why),
                 Ok(_) => println!("successfully wrote to {}", display),
             }

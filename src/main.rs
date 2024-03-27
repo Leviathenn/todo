@@ -3,11 +3,12 @@
  **/
  
  use std::{io, process::exit};
+ use std::env;
  use std::fs::File;
  use std::io::Write;
  use std::io::prelude::*;
  use std::path::Path;
-
+ 
 struct Task {
     name: String,
     is_complete: bool,
@@ -48,10 +49,12 @@ where P: AsRef<Path>, {
     Ok(io::BufReader::new(file).lines())
 }
 fn main() {
+    let args: Vec<_> = env::args().collect();
     if Path::new("./.tasks").exists() {
         let mut print_str: String = String::new();
         if let Ok(lines) = read_lines(".tasks") {
             // Iterates over lines in the file
+            println!("{}",args.get(1).unwrap());
             for line in lines.flatten() {
                 let cleaned_line = line.trim(); // Remove leading and trailing whitespace
     

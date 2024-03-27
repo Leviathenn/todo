@@ -62,6 +62,7 @@ fn main() {
             
                 if endval3 == 8312{
                     // ignore the line.
+                    println!("empty line")
                 }else{
                     let endval: bool = endval2.parse().unwrap();
                     let endt = endval1.get(0).unwrap_or(&"");
@@ -69,13 +70,14 @@ fn main() {
                 for text in endt.split("[%20]") {
                     let trimmed_text = text.trim();
                     if trimmed_text.contains("[%21]") {
-                        printStr.push_str(String::as_str(&format!("{}",trimmed_text.replace("[%21]",""))));
-                    }else{
                         if endval == true{
-
+                            printStr.push_str(String::as_str(&format!("{} ✔",trimmed_text.replace("[%21]",""))));
                         }else{
-                            printStr.push_str(String::as_str(&format!("{} ",trimmed_text)));
+                            printStr.push_str(String::as_str(&format!("{} ❌",trimmed_text.replace("[%21]",""))));
                         }
+                    }else{
+                        
+                        printStr.push_str(String::as_str(&format!("{} ",trimmed_text)));
                     } 
                 }
                 } // Use unwrap_or to handle parse errors
@@ -85,7 +87,7 @@ fn main() {
         } else {
             println!("Error reading the file.");
         }
-    
+        
         println!("{}", printStr); // Print the accumulated string
     }else{
         println!("Welcome to the todo list! Lets begin with some task you want to complete.");

@@ -50,14 +50,43 @@ where P: AsRef<Path>, {
 }
 fn main() {
     if Path::new("./.tasks").exists() {
+        let mut printStr: String = String::new();
         if let Ok(lines) = read_lines(".tasks") {
-            // Consumes the iterator, returns an (Optional) String
+            // Iterates over lines in the file
             for line in lines.flatten() {
-                for text in line.split("[%20]"){
-                    
+                let cleaned_line = line.trim(); // Remove leading and trailing whitespace
+    
+                let endval1: Vec<&str> = cleaned_line.split(":").map(|s| s.trim()).collect();
+                let endval2 = endval1.get(1).unwrap_or(&"");
+                let endval3: u32 = endval2.parse().unwrap_or(8312);
+            
+                if endval3 == 8312{
+                    // ignore the line.
+                }else{
+                    let endval: bool = endval2.parse().unwrap();
+                    let endt = endval1.get(0).unwrap_or(&"");
+  
+                for text in endt.split("[%20]") {
+                    let trimmed_text = text.trim();
+                    if trimmed_text.contains("[%21]") {
+                        printStr.push_str(String::as_str(&format!("{}",trimmed_text.replace("[%21]",""))));
+                    }else{
+                        if endval == true{
+
+                        }else{
+                            printStr.push_str(String::as_str(&format!("{} ",trimmed_text)));
+                        }
+                    } 
                 }
+                } // Use unwrap_or to handle parse errors
+                
             }
+        
+        } else {
+            println!("Error reading the file.");
         }
+    
+        println!("{}", printStr); // Print the accumulated string
     }else{
         println!("Welcome to the todo list! Lets begin with some task you want to complete.");
         
